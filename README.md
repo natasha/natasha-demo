@@ -1,5 +1,5 @@
 
-# natasha-demo ![CI](https://github.com/bureaucratic-labs/playground/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/bureaucratic-labs/playground/branch/master/graph/badge.svg)](https://codecov.io/gh/natasha/natasha)
+# natasha-demo ![CI](https://github.com/natasha/natasha-demo/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/natasha/natasha-demo/branch/master/graph/badge.svg)](https://codecov.io/gh/natasha/natasha)
 
 ```bash
 $ python -m demo.app
