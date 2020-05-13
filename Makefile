@@ -10,4 +10,4 @@ clean:
 		-o -name .DS_Store \
 		| xargs rm -rf
 
-	rm -rf .pytest_cache/ .cache/ .coverage
+	rm -rf .pytest_cache/ .cache/ .coverage coverage.xml
