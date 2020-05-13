@@ -2,7 +2,7 @@
 # natasha-demo ![CI](https://github.com/bureaucratic-labs/playground/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/bureaucratic-labs/playground/branch/master/graph/badge.svg)](https://codecov.io/gh/natasha/natasha)
 
 ```bash
-$ python -m playground.app
+$ python -m demo.app
 2020-05-08 08:47:57,841 Loading dictionaries from /Users/alexkuk/envs/py36/lib/python3.6/site-packages/pymorphy2_dicts/data
 2020-05-08 08:47:57,936 format: 2.4, revision: 393442, updated: 2015-01-17T16:03:56.586168
 ======== Running on http://0.0.0.0:4000 ========

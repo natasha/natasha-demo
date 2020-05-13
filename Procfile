@@ -1,1 +1,1 @@
-web: python -m playground.app
+web: python -m demo.app
