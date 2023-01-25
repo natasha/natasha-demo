@@ -1,13 +1,24 @@
 
+IMAGE = natasha-demo
+REGISTRY = cr.yandex/crpivkgjcn1eim67enme
+
 test:
-	pytest -vv --pep8 --flakes  demo \
-		--cov-report term-missing --cov-report xml --cov demo
+	flake8 --extend-ignore=E501,W503 app.py test.py
+	pytest -vv test.py
 
-clean:
-	find . \
-		-name '*.pyc' \
-		-o -name __pycache__ \
-		-o -name .DS_Store \
-		| xargs rm -rf
+image:
+	docker build -t $(IMAGE) .
 
-	rm -rf .pytest_cache/ .cache/ .coverage coverage.xml
+push:
+	docker tag $(IMAGE) $(REGISTRY)/$(IMAGE)
+	docker push $(REGISTRY)/$(IMAGE)
+
+deploy:
+	yc serverless container revision deploy \
+		--container-name default \
+		--image $(REGISTRY)/$(IMAGE):latest \
+		--cores 1 \
+		--memory 512MB \
+		--concurrency 2 \
+		--execution-timeout 30s \
+		--folder-name natasha-demo

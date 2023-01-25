@@ -1,8 +1,8 @@
 
-# natasha-demo ![CI](https://github.com/natasha/natasha-demo/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/natasha/natasha-demo/branch/master/graph/badge.svg)](https://codecov.io/gh/natasha/natasha)
+# natasha-demo ![CI](https://github.com/natasha/natasha-demo/actions/workflows/test.yml/badge.svg)
 
 ```bash
-$ curl -X POST http://natasha-demo.herokuapp.com/api/doc/viz -F text='Простите, еще несколько цитат из приговора. «…Отрицал существование Иисуса и пророка Мухаммеда», «наделял Иисуса Христа качествами ожившего мертвеца — зомби» [и] «качествами покемонов — представителей бестиария японской мифологии, тем самым совершил преступление, предусмотренное статьей 148 УК РФ».' | jq .
+$ curl -X POST https://bbae7714ctds8cfj0g51.containers.yandexcloud.net/api/doc/viz -F text='Простите, еще несколько цитат из приговора. «…Отрицал существование Иисуса и пророка Мухаммеда», «наделял Иисуса Христа качествами ожившего мертвеца — зомби» [и] «качествами покемонов — представителей бестиария японской мифологии, тем самым совершил преступление, предусмотренное статьей 148 УК РФ».'
 
 {
   "ner": "Простите, еще несколько цитат из приговора. «…Отрицал существование \nИисуса и пророка Мухаммеда», «наделял Иисуса Христа качествами \n                                      PER──────────            \nожившего мертвеца — зомби» [и] «качествами покемонов — представителей \nбестиария японской мифологии, тем самым совершил преступление, \nпредусмотренн
@@ -42,13 +42,61 @@ $ curl -X POST http://natasha-demo.herokuapp.com/api/doc/viz -F text='Прост
 
 ```
 
+## Development
+
+Dev env
+
+```bash
+python -m venv ~/.venvs/natasha-demo
+source ~/.venvs/natasha-demo/bin/activate
+
+pip install -r requirements/app.txt -r requirements/test.txt
 ```
-heroku logs --app natasha-demo --tail
 
-2020-05-13T12:20:56.690422+00:00 app[web.1]: 2020-05-13 12:20:56,690 10.37.18.30 [13/May/2020:12:20:56 +0000] "POST /api/doc/spans HTTP/1.1" 200 641 "-" "curl/7.49.1"
-2020-05-13T12:20:56.702002+00:00 heroku[router]: at=info method=POST path="/api/doc/spans" host=natasha-demo.herokuapp.com request_id=c9734c31-afb8-4666-8b1b-a5f4b7b77766 fwd="77.50.131.197" dyno=web.1 connect=1ms service=276ms status=200 bytes=641 protocol=http
-2020-05-13T12:21:19.010276+00:00 app[web.1]: 2020-05-13 12:21:19,010 Простите, еще несколько цитат из приговора. «…Отрицал существование Иисуса и пророка Мухаммеда», «наделял Иисуса Христа качествами ожившего мертвеца — зомби» [и] «качествами покемонов — представителей бестиария японской мифологии, тем самым совершил преступление, предусмотренное статьей 148 УК РФ».
-2020-05-13T12:21:19.013027+00:00 app[web.1]: 2020-05-13 12:21:19,012 10.9.82.109 [13/May/2020:12:21:17 +0000] "POST /api/doc/viz HTTP/1.1" 200 3489 "-" "curl/7.49.1"
-2020-05-13T12:21:19.020233+00:00 heroku[router]: at=info method=POST path="/api/doc/viz" host=natasha-demo.herokuapp.com request_id=17b3f370-0f9f-48bc-b74a-f725bda6b92b fwd="77.50.131.197" dyno=web.1 connect=1ms service=1093ms status=200 bytes=3489 protocol=http
+Test + lint
 
+```bash
+make test
+```
+
+Create YC folder
+
+```bash
+yc resource-manager folder create --name natasha-demo
+```
+
+Create YC registry
+
+```bash
+yc container registry create default --folder-name natasha-demo
+
+# Save registry_id to Makefile
+```
+
+Make registry public
+
+```bash
+yc container registry add-access-binding default \
+  --role container-registry.images.puller \
+  --subject system:allUsers \
+  --folder-name natasha-demo
+```
+
+Create YC Serverless Container
+
+```bash
+yc serverless container create --name default --folder-name natasha-demo
+```
+
+Make container endpoint public
+
+```bash
+yc serverless container allow-unauthenticated-invoke default \
+  --folder-name natasha-demo
+```
+
+Logs
+
+```bash
+yc log read default --follow --folder-name natasha-demo
 ```
